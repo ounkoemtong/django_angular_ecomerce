@@ -1,0 +1,359 @@
+[
+  {
+    "model": "store.category",
+    "pk": 3,
+    "fields": {
+      "name": "Phones",
+      "slug": "phones",
+      "created_at": "2026-04-01T03:00:00Z",
+      "updated_at": "2026-04-01T03:00:00Z"
+    }
+  },
+  {
+    "model": "store.brand",
+    "pk": 2,
+    "fields": {
+      "name": "Apple",
+      "slug": "apple",
+      "created_at": "2026-04-01T03:00:00Z",
+      "updated_at": "2026-04-01T03:00:00Z"
+    }
+  },
+  {
+    "model": "store.color",
+    "pk": 1,
+    "fields": {
+      "name": "Black",
+      "code": "#190600",
+      "created_at": "2026-04-01T03:00:00Z",
+      "updated_at": "2026-04-01T03:00:00Z"
+    }
+  },
+  {
+    "model": "store.color",
+    "pk": 2,
+    "fields": {
+      "name": "white",
+      "code": "#ffffff",
+      "created_at": "2026-04-01T03:00:00Z",
+      "updated_at": "2026-04-01T03:00:00Z"
+    }
+  },
+  {
+    "model": "store.color",
+    "pk": 3,
+    "fields": {
+      "name": "Orange",
+      "code": "#ff7800",
+      "created_at": "2026-04-01T03:00:00Z",
+      "updated_at": "2026-04-01T03:00:00Z"
+    }
+  },
+  {
+    "model": "store.product",
+    "pk": 1,
+    "fields": {
+      "category": 3,
+      "brand": 2,
+      "colors": [1, 2],
+      "name": "iphone 12 pro max",
+      "title": "iphone 12 pro max",
+      "slug": "iphone-12-pro-max",
+      "sku": "IPHONE12-97771A96",
+      "short_description": "iphone 12 pro max",
+      "specification": "<p><strong>iphone 12 pro max</strong></p>",
+      "price": "500.00",
+      "tax": "0.00",
+      "is_active": true,
+      "is_featured": false,
+      "is_digital": true,
+      "published_at": "2026-04-01T03:50:27.790310Z",
+      "meta_title": "iphone 12 pro max",
+      "meta_description": "iphone 12 pro max best price in cambodia",
+      "created_at": "2026-04-01T03:50:27.790557Z",
+      "updated_at": "2026-04-04T11:50:56.415263Z"
+    }
+  },
+  {
+    "model": "store.product",
+    "pk": 2,
+    "fields": {
+      "category": 3,
+      "brand": 2,
+      "colors": [1, 3, 2],
+      "name": "iphone 17 pro max",
+      "title": "iphone 17 pro max",
+      "slug": "iphone-17-pro-max",
+      "sku": "IPHONE17-40B62C7E",
+      "short_description": "iphone 17 pro max",
+      "specification": "<p><strong>iphone 17 pro max</strong></p>",
+      "price": "1700.00",
+      "tax": "0.00",
+      "is_active": true,
+      "is_featured": false,
+      "is_digital": true,
+      "published_at": "2026-04-01T08:59:13.040154Z",
+      "meta_title": "iphone 17 pro max",
+      "meta_description": "iphone 17 pro max",
+      "created_at": "2026-04-01T08:59:13.041196Z",
+      "updated_at": "2026-04-04T11:50:56.418184Z"
+    }
+  },
+  {
+    "model": "store.productcolorvariant",
+    "pk": 1,
+    "fields": {
+      "product": 1,
+      "color_reference": 1,
+      "display_name": "Black",
+      "image": "http://127.0.0.1:8000/media/products/colors/1fccbdac-adf2-49df-a2fa-26b5a3f25164.png",
+      "alt_text": "Color Black",
+      "price_adjustment": "0.00",
+      "sort_order": 0,
+      "is_active": true,
+      "created_at": "2026-04-01T03:50:27.798797Z",
+      "updated_at": "2026-04-01T03:50:27.798797Z"
+    }
+  },
+  {
+    "model": "store.productcolorvariant",
+    "pk": 2,
+    "fields": {
+      "product": 1,
+      "color_reference": 2,
+      "display_name": "white",
+      "image": "http://127.0.0.1:8000/media/products/colors/e74b8085-47ec-4e89-8692-e464d682aabc.png",
+      "alt_text": "Color white",
+      "price_adjustment": "10.00",
+      "sort_order": 1,
+      "is_active": true,
+      "created_at": "2026-04-01T03:50:27.801752Z",
+      "updated_at": "2026-04-01T03:50:27.801752Z"
+    }
+  },
+  {
+    "model": "store.productcolorvariant",
+    "pk": 3,
+    "fields": {
+      "product": 2,
+      "color_reference": 1,
+      "display_name": "Black",
+      "image": "http://127.0.0.1:8000/media/products/colors/6bd6837b-1c0d-47e6-a0ed-b50389ea3446.png",
+      "alt_text": "Black",
+      "price_adjustment": "0.00",
+      "sort_order": 0,
+      "is_active": true,
+      "created_at": "2026-04-01T09:00:35.835111Z",
+      "updated_at": "2026-04-01T09:00:35.835111Z"
+    }
+  },
+  {
+    "model": "store.productcolorvariant",
+    "pk": 4,
+    "fields": {
+      "product": 2,
+      "color_reference": 2,
+      "display_name": "white",
+      "image": "http://127.0.0.1:8000/media/products/colors/0294a264-d8e8-4bfa-8bfb-80dcb01061e9.png",
+      "alt_text": "White",
+      "price_adjustment": "0.00",
+      "sort_order": 1,
+      "is_active": true,
+      "created_at": "2026-04-01T09:00:35.864158Z",
+      "updated_at": "2026-04-01T09:00:35.864158Z"
+    }
+  },
+  {
+    "model": "store.productcolorvariant",
+    "pk": 5,
+    "fields": {
+      "product": 2,
+      "color_reference": 3,
+      "display_name": "Orange",
+      "image": "http://127.0.0.1:8000/media/products/colors/aae27954-6542-4416-aae2-a764f5d096d9.png",
+      "alt_text": "Orange",
+      "price_adjustment": "0.00",
+      "sort_order": 2,
+      "is_active": true,
+      "created_at": "2026-04-01T09:00:35.894117Z",
+      "updated_at": "2026-04-01T09:00:35.894117Z"
+    }
+  },
+  {
+    "model": "store.productoptiongroup",
+    "pk": 1,
+    "fields": {
+      "product": 1,
+      "title": "Choose Storage",
+      "sort_order": 0,
+      "created_at": "2026-04-01T03:50:27.802863Z",
+      "updated_at": "2026-04-01T08:02:59.307793Z"
+    }
+  },
+  {
+    "model": "store.productoptiongroup",
+    "pk": 2,
+    "fields": {
+      "product": 2,
+      "title": "Choose Storage",
+      "sort_order": 0,
+      "created_at": "2026-04-01T08:59:13.043736Z",
+      "updated_at": "2026-04-01T09:00:35.733791Z"
+    }
+  },
+  {
+    "model": "store.productoptionvalue",
+    "pk": 9,
+    "fields": {
+      "group": 1,
+      "label": "512 G",
+      "price": "0.00",
+      "sort_order": 0,
+      "created_at": "2026-04-01T08:02:59.313437Z",
+      "updated_at": "2026-04-01T08:02:59.313462Z"
+    }
+  },
+  {
+    "model": "store.productoptionvalue",
+    "pk": 10,
+    "fields": {
+      "group": 1,
+      "label": "1 T",
+      "price": "100.00",
+      "sort_order": 1,
+      "created_at": "2026-04-01T08:02:59.316085Z",
+      "updated_at": "2026-04-01T08:02:59.316109Z"
+    }
+  },
+  {
+    "model": "store.productoptionvalue",
+    "pk": 13,
+    "fields": {
+      "group": 2,
+      "label": "1 T",
+      "price": "0.00",
+      "sort_order": 0,
+      "created_at": "2026-04-01T09:00:35.739972Z",
+      "updated_at": "2026-04-01T09:00:35.740003Z"
+    }
+  },
+  {
+    "model": "store.productoptionvalue",
+    "pk": 14,
+    "fields": {
+      "group": 2,
+      "label": "2 T",
+      "price": "200.00",
+      "sort_order": 1,
+      "created_at": "2026-04-01T09:00:35.742377Z",
+      "updated_at": "2026-04-01T09:00:35.742404Z"
+    }
+  },
+  {
+    "model": "store.productfreeitem",
+    "pk": 1,
+    "fields": {
+      "product": 1,
+      "image": "http://127.0.0.1:8000/media/products/free-items/54f94353-36bc-4f33-8f18-466670179ab7.png",
+      "text": "Free ឆ្នាំងសាកតម្លៃ 35$",
+      "sort_order": 0,
+      "is_active": true,
+      "created_at": "2026-04-01T03:50:27.806760Z",
+      "updated_at": "2026-04-01T08:02:59.374548Z"
+    }
+  },
+  {
+    "model": "store.productfreeitem",
+    "pk": 2,
+    "fields": {
+      "product": 2,
+      "image": "http://127.0.0.1:8000/media/products/free-items/03a7220f-5b91-444d-a1a9-c0d440028456.png",
+      "text": "Free",
+      "sort_order": 0,
+      "is_active": true,
+      "created_at": "2026-04-01T09:00:35.922207Z",
+      "updated_at": "2026-04-01T09:00:35.922257Z"
+    }
+  },
+  {
+    "model": "store.productdiscount",
+    "pk": 1,
+    "fields": {
+      "product": 1,
+      "discount_type": "PERCENT",
+      "value": "10.00",
+      "active_from": "2026-04-01T09:00:00Z",
+      "active_until": "2026-04-01T09:05:00Z",
+      "is_active": true,
+      "created_at": "2026-04-01T08:20:38.909608Z",
+      "updated_at": "2026-04-01T09:01:08.181280Z"
+    }
+  },
+  {
+    "model": "store.productdiscount",
+    "pk": 2,
+    "fields": {
+      "product": 2,
+      "discount_type": "PERCENT",
+      "value": "10.00",
+      "active_from": "2026-04-01T09:00:00Z",
+      "active_until": "2026-04-01T09:05:00Z",
+      "is_active": true,
+      "created_at": "2026-04-01T09:01:08.177266Z",
+      "updated_at": "2026-04-01T09:01:08.177284Z"
+    }
+  },
+  {
+    "model": "store.productimage",
+    "pk": 2,
+    "fields": {
+      "product": 1,
+      "image": "http://127.0.0.1:8000/media/products/images/45f828d4-6dff-47e4-a7b8-07bbfc61bffe.png",
+      "alt_text": "",
+      "is_feature": false,
+      "sort_order": 0,
+      "is_active": true,
+      "created_at": "2026-04-01T03:50:27.811829Z",
+      "updated_at": "2026-04-01T03:50:27.811829Z"
+    }
+  },
+  {
+    "model": "store.productimage",
+    "pk": 3,
+    "fields": {
+      "product": 1,
+      "image": "http://127.0.0.1:8000/media/products/images/d4a272c3-3540-437e-93e6-dd15a8baf90d.png",
+      "alt_text": "",
+      "is_feature": false,
+      "sort_order": 1,
+      "is_active": true,
+      "created_at": "2026-04-01T08:02:59.482999Z",
+      "updated_at": "2026-04-01T08:02:59.482999Z"
+    }
+  },
+  {
+    "model": "store.productimage",
+    "pk": 4,
+    "fields": {
+      "product": 2,
+      "image": "http://127.0.0.1:8000/media/products/images/99e290f1-e492-4ab4-8fcd-14f79594c803.png",
+      "alt_text": "",
+      "is_feature": true,
+      "sort_order": 0,
+      "is_active": true,
+      "created_at": "2026-04-01T09:00:35.947376Z",
+      "updated_at": "2026-04-01T09:00:35.947376Z"
+    }
+  },
+  {
+    "model": "store.productvideo",
+    "pk": 1,
+    "fields": {
+      "product": 1,
+      "video_file": "http://127.0.0.1:8000/media/products/videos/09d12068-4ffc-42a8-be72-e34f214934f2.mp4",
+      "is_active": true,
+      "created_at": "2026-04-01T04:53:14.124630Z",
+      "updated_at": "2026-04-01T04:53:14.124630Z"
+    }
+  }
+]
