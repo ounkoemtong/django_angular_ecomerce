@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 import shutil
+from urllib.parse import parse_qs
 from unittest.mock import MagicMock, patch
 
 from django.contrib.auth.models import User
@@ -291,6 +292,7 @@ class OrderNotificationApiTests(TestCase):
         self.order_payload = {
             "order": {
                 "id": 12345,
+                "date": "2026-04-25T07:30:00.000Z",
                 "items": [
                     {
                         "product": {
@@ -321,13 +323,25 @@ class OrderNotificationApiTests(TestCase):
             }
         }
 
-    def test_order_notification_requires_login(self):
+    @override_settings(TELEGRAM_BOT_TOKEN="test-token", TELEGRAM_ORDER_CHAT_ID="7125153160")
+    @patch("store.views.urlopen")
+    def test_order_notification_supports_guest_checkout(self, mock_urlopen):
+        response_context = MagicMock()
+        response_context.__enter__.return_value.status = 200
+        mock_urlopen.return_value = response_context
+
         response = self.client.post(
             reverse("order-notify"),
             data=json.dumps(self.order_payload),
             content_type="application/json",
         )
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()["sent"])
+        request = mock_urlopen.call_args.args[0]
+        message = parse_qs(request.data.decode())["text"][0]
+        self.assertIn("គណនី: អតិថិជនមិនបានចូលគណនី", message)
+        self.assertIn("កាលបរិច្ឆេទបញ្ជាទិញ: 25/04/2026 14:30", message)
+        self.assertIn("សរុបត្រូវបង់: $972.00", message)
 
     @override_settings(TELEGRAM_BOT_TOKEN="test-token", TELEGRAM_ORDER_CHAT_ID="7125153160")
     @patch("store.views.urlopen")
@@ -346,11 +360,13 @@ class OrderNotificationApiTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.json()["sent"])
         request = mock_urlopen.call_args.args[0]
-        body = request.data.decode()
-        self.assertIn("chat_id=7125153160", body)
-        self.assertIn("New+paid+order", body)
-        self.assertIn("Account%3A+customer+%28ID+", body)
-        self.assertIn("Total%3A+%24972.00", body)
+        payload = parse_qs(request.data.decode())
+        self.assertEqual(payload["chat_id"][0], "7125153160")
+        message = payload["text"][0]
+        self.assertIn("មានការបញ្ជាទិញបានបង់ប្រាក់ថ្មី", message)
+        self.assertIn("កាលបរិច្ឆេទបញ្ជាទិញ: 25/04/2026 14:30", message)
+        self.assertIn("គណនី: customer (ID", message)
+        self.assertIn("សរុបត្រូវបង់: $972.00", message)
 
     @override_settings(TELEGRAM_BOT_TOKEN="", TELEGRAM_ORDER_CHAT_ID="7125153160")
     def test_order_notification_explains_missing_telegram_config(self):
@@ -365,6 +381,47 @@ class OrderNotificationApiTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.json()["sent"])
         self.assertIn("not configured", response.json()["message"])
+
+
+class ContactNotificationApiTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.payload = {
+            "name": "Customer One",
+            "email": "customer@example.com",
+            "subject": "Product question",
+            "message": "Is this available today?",
+        }
+
+    @override_settings(TELEGRAM_BOT_TOKEN="test-token", TELEGRAM_ORDER_CHAT_ID="7125153160")
+    @patch("store.views.urlopen")
+    def test_contact_notification_sends_telegram_message(self, mock_urlopen):
+        response_context = MagicMock()
+        response_context.__enter__.return_value.status = 200
+        mock_urlopen.return_value = response_context
+
+        response = self.client.post(
+            reverse("contact-notify"),
+            data=json.dumps(self.payload),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()["sent"])
+        request = mock_urlopen.call_args.args[0]
+        message = parse_qs(request.data.decode())["text"][0]
+        self.assertIn("មានសារទំនាក់ទំនងថ្មី", message)
+        self.assertIn("ប្រធានបទ: Product question", message)
+
+    def test_contact_notification_requires_message_fields(self):
+        response = self.client.post(
+            reverse("contact-notify"),
+            data=json.dumps({"name": "Customer One"}),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Missing required fields", response.json()["detail"])
 
 
 class UserManagementApiTests(TestCase):

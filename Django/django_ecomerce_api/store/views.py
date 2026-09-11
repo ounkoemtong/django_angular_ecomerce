@@ -309,27 +309,40 @@ def money_value(value):
 def order_item_line(item):
     product = item.get("product") or {}
     quantity = item.get("quantity", 1)
-    name = product.get("name") or product.get("title") or "Product"
+    name = product.get("name") or product.get("title") or "ទំនិញ"
     sku = product.get("sku")
     price = money_value(product.get("price", "0.00"))
     sku_text = f" ({sku})" if sku else ""
-    return f"- {name}{sku_text} x {quantity} @ ${price}"
+    return f"- {name}{sku_text} x {quantity} តម្លៃ ${price}"
 
 
-def build_order_notification(order, user):
-    profile = get_user_profile(user)
+def order_date_text(order):
+    raw_date = order.get("date") or order.get("created_at")
+    ordered_at = parse_datetime(str(raw_date)) if raw_date else None
+    if ordered_at is None:
+        ordered_at = timezone.now()
+    if timezone.is_naive(ordered_at):
+        ordered_at = timezone.make_aware(ordered_at, timezone.get_current_timezone())
+    ordered_at = timezone.localtime(ordered_at)
+    return ordered_at.strftime("%d/%m/%Y %H:%M")
+
+
+def build_order_notification(order, user=None):
+    profile = get_user_profile(user) if user and user.is_authenticated else None
     pricing = order.get("pricing") or {}
     shipping = order.get("shippingAddress") or {}
     items = order.get("items") or []
     item_lines = [order_item_line(item) for item in items[:12]]
     if len(items) > 12:
-        item_lines.append(f"- ...and {len(items) - 12} more item(s)")
+        item_lines.append(f"- ...និងទំនិញ {len(items) - 12} មុខទៀត")
     if not item_lines:
-        item_lines = ["- No items received"]
+        item_lines = ["- មិនមានទំនិញ"]
 
-    customer_name = shipping.get("fullName") or [user.first_name, user.last_name]
+    customer_name = shipping.get("fullName") or (
+        [user.first_name, user.last_name] if user and user.is_authenticated else []
+    )
     if isinstance(customer_name, list):
-        customer_name = " ".join(part for part in customer_name if part) or user.username
+        customer_name = " ".join(part for part in customer_name if part) or "អតិថិជនមិនបានចូលគណនី"
 
     address_parts = [
         shipping.get("address"),
@@ -337,31 +350,56 @@ def build_order_notification(order, user):
         shipping.get("zipCode"),
         shipping.get("country"),
     ]
-    address = ", ".join(str(part) for part in address_parts if part) or "Not provided"
+    address = ", ".join(str(part) for part in address_parts if part) or "មិនបានបំពេញ"
     payment_method = str(order.get("paymentMethod", "")).lower()
-    title = "New order" if payment_method == "cash-on-delivery" else "New paid order"
+    payment_labels = {
+        "card": "កាតឥណទាន / ឥណពន្ធ",
+        "paypal": "PayPal",
+        "cash-on-delivery": "បង់ប្រាក់ពេលទទួលទំនិញ",
+    }
+    payment_label = payment_labels.get(payment_method, order.get("paymentMethod", "មិនបានបំពេញ"))
+    title = "មានការបញ្ជាទិញថ្មី" if payment_method == "cash-on-delivery" else "មានការបញ្ជាទិញបានបង់ប្រាក់ថ្មី"
 
     lines = [
         title,
-        f"Order ID: {order.get('id', 'N/A')}",
-        f"Account: {user.username} (ID {user.id})",
-        f"Name: {customer_name}",
-        f"Email: {order.get('customerEmail') or user.email or 'Not provided'}",
-        f"Phone: {order.get('customerPhone') or profile.phone or 'Not provided'}",
-        f"Payment: {order.get('paymentMethod', 'Not provided')}",
-        f"Status: {order.get('status', 'Confirmed')}",
+        f"លេខកូដការបញ្ជាទិញ: {order.get('id', 'N/A')}",
+        f"កាលបរិច្ឆេទបញ្ជាទិញ: {order_date_text(order)}",
+        (
+            f"គណនី: {user.username} (ID {user.id})"
+            if user and user.is_authenticated
+            else "គណនី: អតិថិជនមិនបានចូលគណនី"
+        ),
+        f"ឈ្មោះអតិថិជន: {customer_name}",
+        f"អ៊ីមែល: {order.get('customerEmail') or (user.email if user and user.is_authenticated else '') or 'មិនបានបំពេញ'}",
+        f"លេខទូរស័ព្ទ: {order.get('customerPhone') or (profile.phone if profile else '') or 'មិនបានបំពេញ'}",
+        f"វិធីបង់ប្រាក់: {payment_label}",
+        f"ស្ថានភាព: {order.get('status', 'Confirmed')}",
         "",
-        "Items:",
+        "ទំនិញ:",
         *item_lines,
         "",
-        f"Subtotal: ${money_value(pricing.get('subtotal', '0.00'))}",
-        f"Shipping: ${money_value(pricing.get('shipping', '0.00'))}",
-        f"Tax: ${money_value(pricing.get('tax', '0.00'))}",
-        f"Total: ${money_value(pricing.get('total', '0.00'))}",
+        f"តម្លៃទំនិញសរុប: ${money_value(pricing.get('subtotal', '0.00'))}",
+        f"ថ្លៃដឹកជញ្ជូន: ${money_value(pricing.get('shipping', '0.00'))}",
+        f"ពន្ធ: ${money_value(pricing.get('tax', '0.00'))}",
+        f"សរុបត្រូវបង់: ${money_value(pricing.get('total', '0.00'))}",
         "",
-        f"Ship to: {address}",
+        f"អាសយដ្ឋានដឹកជញ្ជូន: {address}",
     ]
     return "\n".join(lines)
+
+
+def build_contact_notification(payload):
+    return "\n".join(
+        [
+            "មានសារទំនាក់ទំនងថ្មី",
+            f"ឈ្មោះ: {payload.get('name', 'មិនបានបំពេញ')}",
+            f"អ៊ីមែល: {payload.get('email', 'មិនបានបំពេញ')}",
+            f"ប្រធានបទ: {payload.get('subject', 'មិនបានបំពេញ')}",
+            "",
+            "សារ:",
+            payload.get("message", "មិនបានបំពេញ"),
+        ]
+    )
 
 
 def send_telegram_message(text):
@@ -1127,9 +1165,6 @@ class ResendOTPView(JsonView):
 @method_decorator(csrf_exempt, name="dispatch")
 class OrderNotificationView(JsonView):
     def post(self, request):
-        auth_error = require_auth(request)
-        if auth_error:
-            return auth_error
         try:
             payload = self.parse_body(request)
         except ValueError as exc:
@@ -1140,6 +1175,24 @@ class OrderNotificationView(JsonView):
             return json_error("Order items are required.")
 
         message = build_order_notification(order, request.user)
+        sent, notification_message = send_telegram_message(message)
+        return JsonResponse({"message": notification_message, "sent": sent})
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class ContactNotificationView(JsonView):
+    def post(self, request):
+        try:
+            payload = self.parse_body(request)
+        except ValueError as exc:
+            return json_error(str(exc))
+
+        required = ["name", "email", "subject", "message"]
+        missing = [field for field in required if not str(payload.get(field, "")).strip()]
+        if missing:
+            return json_error(f"Missing required fields: {', '.join(missing)}.")
+
+        message = build_contact_notification(payload)
         sent, notification_message = send_telegram_message(message)
         return JsonResponse({"message": notification_message, "sent": sent})
 
