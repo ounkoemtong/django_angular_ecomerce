@@ -1,0 +1,12 @@
+.app-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(251, 191, 36, 0.16), transparent 28%),
+    radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.16), transparent 22%),
+    linear-gradient(180deg, #fffdf7 0%, #f8fafc 42%, #eef2ff 100%);
+  color: #111827;
+}
+
+.app-main {
+  min-height: calc(100vh - 80px);
+}

@@ -1,0 +1,9 @@
+<div class="app-shell">
+  <app-header *ngIf="!shouldHideChrome()"></app-header>
+
+  <main class="app-main">
+    <router-outlet></router-outlet>
+  </main>
+
+  <app-footer *ngIf="!shouldHideChrome()"></app-footer>
+</div>
